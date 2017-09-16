@@ -32,8 +32,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
     }
 
-    public void swapCursor(Cursor cursor) {
-        mCursor = cursor;
+    void swapCursor(Cursor cursor) {
+         mCursor = cursor;
         notifyDataSetChanged();
     }
 
