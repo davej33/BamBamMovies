@@ -23,12 +23,13 @@ public class DbHelper extends SQLiteOpenHelper {
 
                 Contract.MovieEntry.MOVIE_DB_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 Contract.MovieEntry.MOVIE_TITLE + " TEXT NOT NULL, " +
+                Contract.MovieEntry.MOVIE_PLOT + " TEXT NOT NULL, " +
                 Contract.MovieEntry.MOVIE_TMDB_ID + " INTEGER UNIQUE NOT NULL, " +
                 Contract.MovieEntry.MOVIE_DATE + " TEXT NOT NULL, " +
                 Contract.MovieEntry.MOVIE_POPULARITY + " INTEGER NOT NULL, " +
                 Contract.MovieEntry.MOVIE_RATING + " INTEGER NOT NULL, " +
                 Contract.MovieEntry.MOVIE_POSTER + " TEXT, " +
-                Contract.MovieEntry.MOVIE_FAVORITE + " INTEGER NOT NULL DEFAULT 0, " +
+                Contract.MovieEntry.MOVIE_FAVORITE + " INTEGER DEFAULT 0, " +
                 " UNIQUE (" + Contract.MovieEntry.MOVIE_TMDB_ID + ") ON CONFLICT REPLACE);";
 
         db.execSQL(createDb);

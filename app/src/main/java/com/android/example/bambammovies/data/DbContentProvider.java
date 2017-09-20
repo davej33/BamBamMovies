@@ -4,9 +4,12 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by dave on 9/11/17.
@@ -14,6 +17,7 @@ import android.support.annotation.Nullable;
 
 public class DbContentProvider extends ContentProvider {
 
+    private static final String LOG_TAG = DbContentProvider.class.getSimpleName();
     private static final int TABLE_CODE = 100;
     private static final int ITEM_CODE = 101;
     private static UriMatcher sUriMatcher = getUriMatcher();
@@ -35,7 +39,24 @@ public class DbContentProvider extends ContentProvider {
     @Override
     public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         // TODO code
-        return super.bulkInsert(uri, values);
+        SQLiteDatabase db = sDbHelper.getWritableDatabase();
+        int rowsInserted = 0;
+
+        db.beginTransaction();
+        long check;
+        try{
+            for (ContentValues cv : values) {
+                check = db.insert(Contract.MovieEntry.MOVIE_TABLE_NAME,null, cv);
+                if(check != -1)rowsInserted++;
+            }
+            db.setTransactionSuccessful();
+        } catch (SQLException e){
+            Log.e(LOG_TAG, "Bulk Insert Error: " + e);
+        } finally {
+            db.close();
+        }
+        Log.i(LOG_TAG, "Rows Bulk Inserted: " + rowsInserted);
+        return rowsInserted;
     }
 
     @Nullable

@@ -25,10 +25,14 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // set action bar
         ActionBar bar = getActionBar();
         if (bar != null) bar.setDisplayHomeAsUpEnabled(true);
 
-        getSupportFragmentManager().beginTransaction().add(R.id.list_fragment, new MainFragment().newInstance()).commit(); // stopped here
+        // add
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.list_fragment, new MainFragment().newInstance()).commit(); // stopped here
     }
 
 

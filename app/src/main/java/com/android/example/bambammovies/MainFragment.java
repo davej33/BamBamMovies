@@ -1,11 +1,13 @@
 package com.android.example.bambammovies;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -37,6 +39,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private static final int MOVIE_LOADER_ID = 111;
     private static final int COLUMNS_PORTRAIT = 2;
     private static final int COLUMNS_LANDSCAPE = 3;
+    private static SharedPreferences sPreferences;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -92,6 +95,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         recyclerView.setAdapter(sAdapter);
         recyclerView.setHasFixedSize(true);
 
+        setupSharedPreferences();
+
         // set grid layout column numbers based on orientation
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_PORTRAIT));
@@ -100,7 +105,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         }
 
         // check db init state, display data if already initialized
-        if (SyncUtils.initializeDb()) {
+        if (SyncUtils.isInitializeDb(getContext())) {
             displayData();
         } else {
             // if db not initialized, wait for 1 second to initialize then display
@@ -114,6 +119,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main, container, false);
+    }
+
+    private void setupSharedPreferences() {
+        sPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        sPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
+                displayData();
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

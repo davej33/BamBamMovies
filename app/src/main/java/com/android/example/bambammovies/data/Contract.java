@@ -31,5 +31,6 @@ public final class Contract {
         public static final String MOVIE_POPULARITY = "popularity";
         public static final String MOVIE_POSTER = "poster";
         public static final String MOVIE_FAVORITE = "favorite";
+        public static final String MOVIE_PLOT = "plot";
     }
 }
