@@ -31,11 +31,11 @@ import com.android.example.bambammovies.utils.SyncUtils;
  * Use the {@link MainFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static boolean sIsInitialized = false;
-    private static MovieAdapter sAdapter;
+    private MovieAdapter mAdapter;
     private static final int MOVIE_LOADER_ID = 111;
     private static final int COLUMNS_PORTRAIT = 2;
     private static final int COLUMNS_LANDSCAPE = 3;
@@ -60,8 +60,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment MainFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -87,18 +85,18 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //create view
-        View rootView = inflater.inflate(R.layout.fragment_main, container);
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // setup recyclerView with adapter
-        RecyclerView recyclerView = new RecyclerView(getContext());
-        sAdapter = new MovieAdapter();
-        recyclerView.setAdapter(sAdapter);
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        mAdapter = new MovieAdapter(getContext());
+        recyclerView.setAdapter(mAdapter);
         recyclerView.setHasFixedSize(true);
 
         setupSharedPreferences();
 
         // set grid layout column numbers based on orientation
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_PORTRAIT));
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), COLUMNS_LANDSCAPE));
@@ -118,7 +116,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         }
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false);
+        return rootView;
     }
 
     private void setupSharedPreferences() {
@@ -157,22 +155,19 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), Contract.MovieEntry.MOVIE_URI,null,null,null,null);
+        return new CursorLoader(getContext(), Contract.MovieEntry.MOVIE_URI, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(data == null || data.getCount() < 1 ){
-            Log.e(LOG_TAG, "MainActivity cursor empty or null");
-        } else {
-            data.moveToFirst();
-            sAdapter.swapCursor(data);
-        }
+        Log.i(LOG_TAG, "Cursor count: " + data.getCount());
+        data.moveToFirst();
+        mAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        sAdapter.swapCursor(null);
+        mAdapter.swapCursor(null);
     }
 
     /**
@@ -191,7 +186,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     }
 
     private void displayData() {
-        if(sAdapter.getItemCount() == 0 || sAdapter == null){
+        if (mAdapter.getItemCount() == 0 || mAdapter == null) {
             getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
         } else {
             getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);

@@ -24,8 +24,6 @@ public class NetworkUtils {
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
     private static final String TAG = "default";
 
-
-
     public static void initRequestQueue(Context context) {
         if(sRequestQueue == null) sRequestQueue = Volley.newRequestQueue(context);
     }

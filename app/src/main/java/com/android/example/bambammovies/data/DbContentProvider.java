@@ -53,7 +53,7 @@ public class DbContentProvider extends ContentProvider {
         } catch (SQLException e){
             Log.e(LOG_TAG, "Bulk Insert Error: " + e);
         } finally {
-            db.close();
+            db.endTransaction();
         }
         Log.i(LOG_TAG, "Rows Bulk Inserted: " + rowsInserted);
         return rowsInserted;
@@ -62,9 +62,23 @@ public class DbContentProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        // TODO code
+        SQLiteDatabase db = sDbHelper.getReadableDatabase();
+        Cursor cursor = null;
 
-        return null;
+        switch(sUriMatcher.match(uri)){
+            case TABLE_CODE:
+                cursor = db.query(Contract.MovieEntry.MOVIE_TABLE_NAME,null,null,null,null,null,null);
+                break;
+            case ITEM_CODE:
+                String id = uri.getLastPathSegment();
+                cursor = db.query(Contract.MovieEntry.MOVIE_TABLE_NAME,null, Contract.MovieEntry.MOVIE_DB_ID, new String[]{id},null,null,null);
+                break;
+            default:
+                Log.e(LOG_TAG, "No Query Type Match: " + uri);
+                break;
+        }
+
+        return cursor;
     }
 
     @Nullable
