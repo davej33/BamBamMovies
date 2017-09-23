@@ -21,6 +21,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     private static Cursor sCursor;
     private Context mContext;
+    private static int sHolderWidth;
+    private static int sHolderHeight;
 
     public MovieAdapter(Context context) {
         mContext = context;
@@ -31,6 +33,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
         // inflate view
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.movie_poster_layout, parent, false);
+        view.getLayoutParams().height = sHolderHeight;
+        view.getLayoutParams().width = sHolderWidth;
         return new MovieViewHolder(view);
     }
 
@@ -44,7 +48,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 .load(poster_url)
                 .error(R.drawable.error)
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                .resize(200, 300)
+                .resize(sHolderWidth, sHolderHeight)
                 .placeholder(R.drawable.placeholder)
                 .centerCrop()
                 .into(holder.posterView);
@@ -65,6 +69,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
+    public static void setWidthHeight(int width) {
+        sHolderWidth = width;
+        sHolderHeight = (int) (sHolderWidth * 1.5);
+        Log.i("Adapter", "width: " + width);
+    }
+
     public class MovieViewHolder extends RecyclerView.ViewHolder {
 
         ImageView posterView;
@@ -74,5 +84,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
             posterView = itemView.findViewById(R.id.poster_layout);
         }
+
+
     }
 }

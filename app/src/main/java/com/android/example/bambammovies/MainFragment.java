@@ -85,10 +85,16 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //create view
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        // get width and height
+
+//        int width = rootView.getMeasuredWidth() / 2;
+//        int height = rootView.getMeasuredHeight() / 2;
+//
+//        Log.i(LOG_TAG, "width / height: " + width + " / " + height); // stopped here.
         // setup recyclerView with adapter
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
         mAdapter = new MovieAdapter(getContext());
         recyclerView.setAdapter(mAdapter);
         recyclerView.setHasFixedSize(true);
@@ -118,6 +124,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         // Inflate the layout for this fragment
         return rootView;
     }
+
 
     private void setupSharedPreferences() {
         sPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
