@@ -2,13 +2,13 @@ package com.android.example.bambammovies.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.example.bambammovies.MainFragment;
+import com.android.example.bambammovies.R;
 import com.android.example.bambammovies.data.Contract;
 import com.android.example.bambammovies.data.DbHelper;
 import com.android.volley.AuthFailureError;
@@ -22,9 +22,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
-
-import java.net.URL;
-import java.sql.SQLException;
 
 /**
  * Created by charlotte on 9/15/17.
@@ -64,29 +61,8 @@ public final class SyncUtils {
                         // initialize request queue
                         NetworkUtils.initRequestQueue(context);
 
-                        // builds url string
-                        StringRequest initStringRequest = new StringRequest(NetworkUtils.buildMovieUrl(context), new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                // json parse
-                                ContentValues[] cvArray = null;
-                                try{
-                                    cvArray = JsonUtils.parseData(response);
-                                    if(cvArray != null) insertData(context, cvArray);
-                                } catch (JSONException e){
-                                    Log.e(LOG_TAG, "json parse error: " + e);
-                                }
-
-
-
-                                Log.i(LOG_TAG, "Init StringRequest Response: " + response);
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                checkVolleyError(error);
-                            }
-                        }) ;
+                        // build StringRequest
+                        StringRequest initStringRequest = buildStringRequest(context);
 
                         // add string request to request queue
                         NetworkUtils.addToRequestQueue(initStringRequest, null);
@@ -117,7 +93,6 @@ public final class SyncUtils {
     private static  void checkVolleyError(VolleyError error){
         if (error instanceof TimeoutError || error instanceof NoConnectionError) {
             Toast.makeText(mContext, "No Network Connection", Toast.LENGTH_SHORT).show();
-
         } else if (error instanceof AuthFailureError) {
             Toast.makeText(mContext, "Authentication Error!", Toast.LENGTH_SHORT).show();
         } else if (error instanceof ServerError) {
@@ -129,5 +104,33 @@ public final class SyncUtils {
         }
     }
 
+    public static StringRequest buildStringRequest(final Context context){
+
+        return new StringRequest(NetworkUtils.buildMovieUrl(context), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                String sort = preferences.getString(context.getString(R.string.pref_sort_fav_label), context.getString(R.string.pref_sort_default));
+
+                // json parse
+                ContentValues[] cvArray = null;
+                try{
+                    JsonUtils.setQueryType(sort);
+                    cvArray = JsonUtils.parseData(response);
+                    if(cvArray != null) insertData(context, cvArray);
+                } catch (JSONException e){
+                    Log.e(LOG_TAG, "json parse error: " + e);
+                }
+
+                Log.i(LOG_TAG, "Init StringRequest Response: " + response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                checkVolleyError(error);
+            }
+        }) ;
+    }
 
 }

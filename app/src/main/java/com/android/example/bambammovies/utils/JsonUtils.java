@@ -1,7 +1,10 @@
 package com.android.example.bambammovies.utils;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.util.Log;
 
+import com.android.example.bambammovies.R;
 import com.android.example.bambammovies.data.Contract;
 
 import org.json.JSONArray;
@@ -14,9 +17,14 @@ import org.json.JSONObject;
 
 public final class JsonUtils {
 
-
+    private static int mPopularQuery = 0;
+    private static int mRatingQuery = 0;
+    private static final String POPULARITY = "popular";
+    private static final String RATING = "top_rated";
 
     public static ContentValues[] parseData(String response) throws JSONException {
+
+
 
         // Query Api keys
         final String TITLE_KEY = "title";
@@ -58,10 +66,34 @@ public final class JsonUtils {
             cv.put(Contract.MovieEntry.MOVIE_POPULARITY, popularity);
             cv.put(Contract.MovieEntry.MOVIE_RATING, rating);
             cv.put(Contract.MovieEntry.MOVIE_POSTER, poster);
+            cv.put(Contract.MovieEntry.MOVIE_POPULARITY_QUERY, mPopularQuery);
+            cv.put(Contract.MovieEntry.MOVIE_RATING_QUERY, mRatingQuery);
 
             cvArray[i] = cv;
         }
 
+        resetQueryTypes();
+
         return cvArray;
+    }
+
+    private static void resetQueryTypes() {
+        mRatingQuery = 0;
+        mPopularQuery = 0;
+    }
+
+    // sets db value to define movie by query type
+    public static void setQueryType(String queryType) {
+        switch(queryType){
+            case POPULARITY:
+                mPopularQuery = 1;
+                break;
+            case RATING:
+                mRatingQuery = 1;
+                break;
+            default:
+                Log.e("JsonUtils", "Query Type Error");
+        }
+
     }
 }

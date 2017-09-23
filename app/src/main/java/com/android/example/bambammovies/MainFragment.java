@@ -34,21 +34,20 @@ import com.android.example.bambammovies.utils.SyncUtils;
 public class MainFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private static boolean sIsInitialized = false;
     private MovieAdapter mAdapter;
     private static final int MOVIE_LOADER_ID = 111;
     private static final int COLUMNS_PORTRAIT = 2;
     private static final int COLUMNS_LANDSCAPE = 3;
     private static SharedPreferences sPreferences;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+//    private static final String ARG_PARAM1 = "param1";
+//    private static final String ARG_PARAM2 = "param2";
+//
+//
+//    private String mParam1;
+//    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -62,7 +61,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
      *
      * @return A new instance of fragment MainFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static MainFragment newInstance() {
         MainFragment fragment = new MainFragment();
         Bundle args = new Bundle();
@@ -72,13 +71,14 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//        if (getArguments() != null) {
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
+//        }
     }
 
     @Override
@@ -87,13 +87,6 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         //create view
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        // get width and height
-
-//        int width = rootView.getMeasuredWidth() / 2;
-//        int height = rootView.getMeasuredHeight() / 2;
-//
-//        Log.i(LOG_TAG, "width / height: " + width + " / " + height); // stopped here.
-        // setup recyclerView with adapter
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
         mAdapter = new MovieAdapter(getContext());
         recyclerView.setAdapter(mAdapter);

@@ -30,6 +30,8 @@ public final class Contract {
         public static final String MOVIE_RATING = "rating";
         public static final String MOVIE_POPULARITY = "popularity";
         public static final String MOVIE_POSTER = "poster";
+        public static final String MOVIE_POPULARITY_QUERY = "pop_query";
+        public static final String MOVIE_RATING_QUERY = "rat_query";
         public static final String MOVIE_FAVORITE = "favorite";
         public static final String MOVIE_PLOT = "plot";
     }

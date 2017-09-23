@@ -43,7 +43,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         sCursor.moveToPosition(position);
 
         String poster_url = sCursor.getString(sCursor.getColumnIndex(Contract.MovieEntry.MOVIE_POSTER));
-        Log.i("Adapter", "Poster URL: " + poster_url);
         Picasso.with(mContext)
                 .load(poster_url)
                 .error(R.drawable.error)
@@ -69,17 +68,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         notifyDataSetChanged();
     }
 
-    public static void setWidthHeight(int width) {
+    static void setWidthHeight(int width) {
         sHolderWidth = width;
         sHolderHeight = (int) (sHolderWidth * 1.5);
         Log.i("Adapter", "width: " + width);
     }
 
-    public class MovieViewHolder extends RecyclerView.ViewHolder {
+    class MovieViewHolder extends RecyclerView.ViewHolder {
 
         ImageView posterView;
 
-        public MovieViewHolder(View itemView) {
+          MovieViewHolder(View itemView) {
             super(itemView);
 
             posterView = itemView.findViewById(R.id.poster_layout);
