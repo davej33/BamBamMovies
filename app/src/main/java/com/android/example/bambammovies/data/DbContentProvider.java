@@ -61,13 +61,13 @@ public class DbContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
+    public Cursor query(@NonNull Uri uri, @Nullable String[] selection, @Nullable String selectionArgs, @Nullable String[] strings1, @Nullable String orderBy) {
         SQLiteDatabase db = sDbHelper.getReadableDatabase();
         Cursor cursor = null;
 
         switch(sUriMatcher.match(uri)){
             case TABLE_CODE:
-                cursor = db.query(Contract.MovieEntry.MOVIE_TABLE_NAME,null,null,null,null,null,null);
+                cursor = db.query(Contract.MovieEntry.MOVIE_TABLE_NAME,selection,selectionArgs,null,null,null,orderBy);
                 break;
             case ITEM_CODE:
                 String id = uri.getLastPathSegment();

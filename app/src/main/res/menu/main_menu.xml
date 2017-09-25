@@ -7,4 +7,9 @@
         android:title="@string/pref_header_settings"
         app:showAsAction="never"/>
 
+    <item android:id="@+id/action_refresh"
+        android:title="@string/refresh"
+        app:showAsAction="ifRoom"
+        />
+
 </menu>

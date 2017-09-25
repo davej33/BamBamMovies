@@ -28,7 +28,8 @@ public class NetworkUtils {
         if(sRequestQueue == null) sRequestQueue = Volley.newRequestQueue(context);
     }
 
-    public static void addToRequestQueue(StringRequest stringRequest, String tag){
+    public static void addToRequestQueue(Context c, StringRequest stringRequest, String tag){
+        if(sRequestQueue == null) sRequestQueue = Volley.newRequestQueue(c);
         stringRequest.setTag(TextUtils.isEmpty(tag) ? TAG : tag );
         sRequestQueue.add(stringRequest);
     }
@@ -36,7 +37,7 @@ public class NetworkUtils {
     // build movie query url
     public static String buildMovieUrl(Context context){
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String sort = preferences.getString(context.getString(R.string.pref_sort_fav_label), context.getString(R.string.pref_sort_default));
+        String sort = preferences.getString(context.getString(R.string.pref_sort_key), context.getString(R.string.pref_sort_default));
 
         Uri uri = Uri.parse(context.getString(R.string.query_base_url) + sort + "?").buildUpon()
                 .appendQueryParameter(context.getString(R.string.api_code_key), BuildConfig.MOVIE_API_KEY)

@@ -65,7 +65,7 @@ public final class SyncUtils {
                         StringRequest initStringRequest = buildStringRequest(context);
 
                         // add string request to request queue
-                        NetworkUtils.addToRequestQueue(initStringRequest, null);
+                        NetworkUtils.addToRequestQueue(context,initStringRequest, null);
             }
                 cursor.close();
             }
@@ -111,7 +111,7 @@ public final class SyncUtils {
             public void onResponse(String response) {
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                String sort = preferences.getString(context.getString(R.string.pref_sort_fav_label), context.getString(R.string.pref_sort_default));
+                String sort = preferences.getString(context.getString(R.string.pref_sort_key), context.getString(R.string.pref_sort_default));
 
                 // json parse
                 ContentValues[] cvArray = null;

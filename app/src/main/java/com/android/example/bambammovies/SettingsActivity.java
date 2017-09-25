@@ -44,6 +44,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
 
+            // change prefChanged variable to true in MainFragmant
+            MainFragment.prefChanged(stringValue);
+//            startActivity(new Intent(this, MainActivity.class));
+
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
                 // the preference's 'entries' list.

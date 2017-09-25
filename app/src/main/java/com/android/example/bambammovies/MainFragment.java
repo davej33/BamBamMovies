@@ -20,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.example.bambammovies.data.Contract;
+import com.android.example.bambammovies.utils.NetworkUtils;
 import com.android.example.bambammovies.utils.SyncUtils;
+import com.android.volley.toolbox.StringRequest;
 
 
 /**
@@ -39,6 +41,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     private static final int COLUMNS_PORTRAIT = 2;
     private static final int COLUMNS_LANDSCAPE = 3;
     private static SharedPreferences sPreferences;
+    private static boolean sPrefChanged = false;
+    private static String sSortValue = "popular";
 
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -87,6 +91,8 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         //create view
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        Log.i(LOG_TAG, "VIEW CREATED %%%%%%%% ");
+
         RecyclerView recyclerView = rootView.findViewById(R.id.recycler_view);
         mAdapter = new MovieAdapter(getContext());
         recyclerView.setAdapter(mAdapter);
@@ -125,6 +131,7 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
                 displayData();
+                Log.i(LOG_TAG, "SharedPrefChangeListenerRun %%%%%%%%%%%% " + s);
             }
         });
     }
@@ -155,7 +162,21 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), Contract.MovieEntry.MOVIE_URI, null, null, null, null);
+        String[] projection = {Contract.MovieEntry._ID, Contract.MovieEntry.MOVIE_TITLE, Contract.MovieEntry.MOVIE_POSTER, Contract.MovieEntry.MOVIE_FAVORITE};
+        String[] one = {"1"};
+        switch (sSortValue) {
+            case "popular":
+                Log.w(LOG_TAG, "Loader = Popular " + sSortValue);
+                return new CursorLoader(getContext(), Contract.MovieEntry.MOVIE_URI, null, Contract.MovieEntry.MOVIE_POPULARITY_QUERY + "=?", one, null);
+            case "top_rated":
+                Log.w(LOG_TAG, "Loader = Rated " + sSortValue);
+                String sortByRating = Contract.MovieEntry.MOVIE_RATING + " ASC";
+                return new CursorLoader(getContext(), Contract.MovieEntry.MOVIE_URI, null, Contract.MovieEntry.MOVIE_RATING_QUERY + "=?", one, sortByRating);
+            default:
+                Log.e(LOG_TAG, "No Matching Sort Value for CursorLoader: " + sSortValue);
+                return null;
+        }
+
     }
 
     @Override
@@ -168,6 +189,11 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+    public static void prefChanged(String stringValue) {
+        sPrefChanged = true;
+        sSortValue = stringValue;
     }
 
     /**
@@ -185,11 +211,30 @@ public class MainFragment extends Fragment implements LoaderManager.LoaderCallba
         void onFragmentInteraction(Uri uri);
     }
 
-    private void displayData() {
+    void displayData() {
         if (mAdapter.getItemCount() == 0 || mAdapter == null) {
+            Log.i(LOG_TAG, "DisplayData init run: ");
             getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
         } else {
+            Log.i(LOG_TAG, "DisplayData restart run: ");
             getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.w(LOG_TAG, "onStart Run");
+        if (sPrefChanged) {
+            StringRequest r = SyncUtils.buildStringRequest(getContext());
+            NetworkUtils.addToRequestQueue(getContext(), r, null);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    displayData();
+                }
+            }, 1000);
+            sPrefChanged = false;
         }
     }
 }

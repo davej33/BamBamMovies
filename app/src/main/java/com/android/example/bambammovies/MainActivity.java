@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements MainFragment.OnFr
         switch(id){
             case R.id.action_sort:
                 startActivity(new Intent(this, SettingsActivity.class));
+                break;
+            case R.id.action_refresh:
+                startActivity(new Intent(this, MainActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

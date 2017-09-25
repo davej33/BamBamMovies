@@ -43,6 +43,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         sCursor.moveToPosition(position);
 
         String poster_url = sCursor.getString(sCursor.getColumnIndex(Contract.MovieEntry.MOVIE_POSTER));
+        int id = sCursor.getInt(sCursor.getColumnIndex(Contract.MovieEntry.MOVIE_DB_ID));
+        String title = sCursor.getString(sCursor.getColumnIndex(Contract.MovieEntry.MOVIE_TITLE));
+
+        Log.w("Adapter", "ID / TITLE: " + id + " / " + title);
         Picasso.with(mContext)
                 .load(poster_url)
                 .error(R.drawable.error)
